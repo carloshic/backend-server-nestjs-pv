@@ -1,4 +1,4 @@
-import { Controller, Res, Param, Body, Post, Put, Delete, Get, HttpStatus } from '@nestjs/common';
+import { Controller, Res, Param, Body, Post, Put, Delete, Get, HttpStatus, Query } from '@nestjs/common';
 import { UnidadService } from '../services/unidad.service';
 import { AuthService } from '../services/auth.service';
 import { Unidad } from '../entities/unidad.entity';
@@ -13,8 +13,8 @@ export class UnidadController {
         private unidadService: UnidadService,
     ) { }
     @Get()
-    getAll(@Res() response) {
-        this.unidadService.getAll().then(( unidades: Unidad[] ) => {
+    getAll(@Res() response, @Query('inactivos') incluirInactivos) {
+        this.unidadService.getAll(incluirInactivos).then(( unidades: Unidad[] ) => {
             if ( unidades.length > 0 ) {
                 response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, unidades));
             } else {
@@ -31,7 +31,7 @@ export class UnidadController {
         @Res() response,
         @Param('id') id,
     ) {
-        this.unidadService.get(id).then(( unidad: Unidad ) => {
+        this.unidadService.getById(id).then(( unidad: Unidad ) => {
             if ( unidad ) {
                 response.status(HttpStatus.OK)
                 .json(new CResponse(Status.OK, 'Exito', this.authService.token, unidad));

@@ -1,4 +1,4 @@
-import { Controller, Get, Res, HttpStatus, Post, Put, Delete, Param, Body, HttpException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Res, HttpStatus, Post, Put, Delete, Param, Body, HttpException, UseGuards, Query } from '@nestjs/common';
 import { CResponse } from '../utils/cresponse';
 import { EmpresaService } from '../services/empresa.service';
 import { Empresa } from '../entities/empresa.entity';
@@ -13,8 +13,8 @@ export class EmpresaController {
         private authService: AuthService,
         ) { }
     @Get()
-    getAll(@Res() response) {
-        this.empresaService.getAll().then(( empresas: Empresa[] ) => {
+    getAll(@Res() response, @Query('inactivos') incluirInactivos) {
+        this.empresaService.getAll(incluirInactivos).then(( empresas: Empresa[] ) => {
             if ( empresas.length > 0 ) {
                 response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', null, empresas));
             } else {
@@ -28,7 +28,7 @@ export class EmpresaController {
 
     @Get(':id')
     get(@Res() response, @Param('id') id: number ) {
-        this.empresaService.get(id).then(( empresa: Empresa ) => {
+        this.empresaService.getById(id).then(( empresa: Empresa ) => {
             if ( empresa ) {
                 response.status(HttpStatus.OK)
                 .json(new CResponse(Status.OK, 'Exito', null, empresa));

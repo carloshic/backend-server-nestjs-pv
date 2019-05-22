@@ -16,12 +16,15 @@ id: number;
 @Column()
 codigo: string;
 
-@Column()
+@Column({default: false})
 descripcion: string;
+
+@Column()
+estatus: boolean;
 
 @UpdateDateColumn()
 fechamodificacion: Date;
 
-@ManyToOne(type => Usuario, usuario => usuario.id)
+@ManyToOne(() => Usuario, usuario => usuario.id)
 usuariomodificacion: Usuario;
 }

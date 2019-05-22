@@ -1,5 +1,5 @@
 export class CategoriaDto {
-    nombre: string;
-    descripcion: string;
-    estatus: boolean;
+    public readonly nombre: string;
+    public readonly descripcion: string;
+    public readonly estatus: boolean;
 }

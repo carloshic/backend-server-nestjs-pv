@@ -29,23 +29,36 @@ export class ProductoService {
         private categoriaService: CategoriaService,
         private unidadService: UnidadService,
     ) {}
-    async getAll(): Promise<Producto[]> {
+    async getAll(incluirInactivos = 'false'): Promise<Producto[]> {
+        let strEstatus: string;
+
+        if ( incluirInactivos === 'false' ) {
+            strEstatus = ' AND Producto.estatus = true ';
+        } else {
+            strEstatus = '';
+        }
+
         return await this.productoRepo.find(
             {
-                where: `Producto.empresa = ${this.authService.empresaActiva.id}`,
+                where: `Producto.empresa = ${this.authService.empresaActiva.id} ${strEstatus}`,
                 relations: this.relaciones,
                 order: {
                     id: 'ASC',
                 },
             });
     }
-    async get(id: number): Promise<Producto> {
+    async getById(id: number): Promise<Producto> {
         return await this.productoRepo.findOne(id,
             {
                 where: `Producto.empresa = ${this.authService.empresaActiva.id}`,
                 relations: this.relaciones,
             });
     }
+
+    async getByCode(codigo: string) {
+        return await this.productoRepo.findOne( { codigo } );
+    }
+
     async create(producto: ProductoDto): Promise<Producto> {
         const nuevoProducto: Producto = new Producto();
         nuevoProducto.empresa = this.authService.empresaActiva;
@@ -54,15 +67,13 @@ export class ProductoService {
         nuevoProducto.descripcion = producto.descripcion;
         nuevoProducto.costo = producto.costo;
         nuevoProducto.precio = producto.precio;
-        nuevoProducto.unidad = await this.unidadService.get(producto.unidadId);
-        nuevoProducto.stockminimo = producto.stockMinimo;
-        // nuevoProducto.imagen = producto.imagen;
-        nuevoProducto.marca = await this.marcaService.get(producto.marcaId);
-        nuevoProducto.categoria = await this.categoriaService.get(producto.categoriaId);
+        nuevoProducto.unidad = await this.unidadService.getById(producto.unidadId);
+        nuevoProducto.stockminimo = producto.stockminimo;
+        nuevoProducto.marca = await this.marcaService.getById(producto.marcaId);
+        nuevoProducto.categoria = await this.categoriaService.getById(producto.categoriaId);
         nuevoProducto.estatus = producto.estatus;
         nuevoProducto.usuarioestatus = this.authService.usuarioActivo;
         nuevoProducto.usuariomodificacion = this.authService.usuarioActivo;
-        console.log("LLEGO");
         return await this.productoRepo.save(nuevoProducto);
 
     }
@@ -74,11 +85,10 @@ export class ProductoService {
         nuevoActualizar.descripcion = producto.descripcion;
         nuevoActualizar.costo = producto.costo;
         nuevoActualizar.precio = producto.precio;
-        nuevoActualizar.unidad = await this.unidadService.get(producto.unidadId);
-        nuevoActualizar.stockminimo = producto.stockMinimo;
-        // nuevoActualizar.imagen = producto.imagen;
-        nuevoActualizar.marca = await this.marcaService.get(producto.marcaId);
-        nuevoActualizar.categoria = await this.categoriaService.get(producto.categoriaId);
+        nuevoActualizar.unidad = await this.unidadService.getById(producto.unidadId);
+        nuevoActualizar.stockminimo = producto.stockminimo;
+        nuevoActualizar.marca = await this.marcaService.getById(producto.marcaId);
+        nuevoActualizar.categoria = await this.categoriaService.getById(producto.categoriaId);
         if ( nuevoActualizar.estatus !== producto.estatus ) {
             nuevoActualizar.estatus = producto.estatus;
             nuevoActualizar.usuarioestatus = this.authService.usuarioActivo;
@@ -105,12 +115,22 @@ export class ProductoService {
         return await this.productoRepo.save(productoActualizar);
     }
 
-    async seach(term: string) {
+    async search(term: string, incluirInactivos: string) {
+
+        let strEstatus: string;
+
+        if ( incluirInactivos === 'false' ) {
+            strEstatus = 'AND Producto.estatus = true ';
+        } else {
+            strEstatus = 'AND 1=1';
+        }
+
         return await this.productoRepo
         .find( {
-            where: `LOWER(Producto.codigo) LIKE '%${term.toLowerCase()}%'
+            where: `Producto.empresa = ${this.authService.empresaActiva.id}
+             AND (LOWER(Producto.codigo) LIKE '%${term.toLowerCase()}%'
              OR LOWER(Producto.nombre) LIKE '%${term.toLowerCase()}%'
-             OR LOWER(Producto.descripcion) LIKE '%${term.toLowerCase()}%' `,
+             OR LOWER(Producto.descripcion) LIKE '%${term.toLowerCase()}%') ${strEstatus}`,
             relations: this.relaciones,
         });
     }

@@ -1,4 +1,4 @@
-import { Controller, Get, Res, HttpStatus, Post, Put, Delete, Param, Body, Req } from '@nestjs/common';
+import { Controller, Get, Res, HttpStatus, Post, Put, Delete, Param, Body, Req, Query } from '@nestjs/common';
 import { UsuarioService } from '../services/usuario.service';
 import { CResponse } from '../utils/cresponse';
 import { Usuario } from '../entities/usuario.entity';
@@ -14,21 +14,21 @@ export class UsuarioController {
         ) { }
 
     @Get()
-    getAll(@Res() response) {
-        this.usuarioService.GetAll().then(( usuarios: Usuario[] ) => {
+    getAll(@Res() response, @Query('inactivos') incluirInactivos) {
+        this.usuarioService.getAll(incluirInactivos).then(( usuarios: Usuario[] ) => {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, usuarios));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener usuarios', this.authService.token, null, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener usuarios', this.authService.token, [], error));
         });
     }
 
     @Get(':id')
     get(
         @Res() response,
-        @Param(':id') id,
+        @Param('id') id,
     ) {
-        this.usuarioService.Get(id).then(( usuario: Usuario ) => {
+        this.usuarioService.getById(id).then(( usuario: Usuario ) => {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, usuario));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -41,7 +41,7 @@ export class UsuarioController {
         @Body() body: UsuarioDto,
         @Res() response,
     ) {
-        this.usuarioService.Create(body).then(( usuario: Usuario ) => {
+        this.usuarioService.create(body).then(( usuario: Usuario ) => {
             response.status(HttpStatus.CREATED).json(new CResponse(Status.OK, 'Usuario Creado', null, usuario));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -55,7 +55,7 @@ export class UsuarioController {
         @Res() response,
         @Param('id') id,
     ) {
-        this.usuarioService.Update(id, usuario).then(( usuarioActualizado: Usuario ) => {
+        this.usuarioService.update(id, usuario).then(( usuarioActualizado: Usuario ) => {
             response.status(HttpStatus.CREATED)
             .json(new CResponse(Status.OK, 'Usuario actualizado correctamente ', this.authService.token, usuarioActualizado));
         }).catch((error) => {
@@ -69,7 +69,7 @@ export class UsuarioController {
         @Res() response,
         @Param('id') id: number,
     )  {
-        this.usuarioService.Delete(id).then(( ) => {
+        this.usuarioService.delete(id).then(( ) => {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Usuario borrado', this.authService.token));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)

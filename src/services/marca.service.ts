@@ -7,32 +7,36 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class MarcaService {
+    private relaciones: string [] = [
+        'empresa',
+        'usuarioestatus',
+        'usuariomodificacion',
+    ];
     constructor(
         @InjectRepository(Marca)
         private readonly marcaRepo: Repository<Marca>,
         private authService: AuthService,
      ) { }
 
-    async getAll(): Promise<Marca[]> {
+    async getAll(incluirInactivos = 'false'): Promise<Marca[]> {
+        let strEstatus: string;
+
+        if ( incluirInactivos === 'false' ) {
+            strEstatus = ' AND Marca.estatus = true ';
+        } else {
+            strEstatus = '';
+        }
+
         return await this.marcaRepo.find(
-            {
-                where: `Marca.empresa = ${this.authService.empresaActiva.id}`,
-                relations:
-                [
-                    'empresa',
-                    'usuarioestatus',
-                    'usuariomodificacion',
-                ],
-            });
+        {
+            where: `Marca.empresa = ${this.authService.empresaActiva.id} ${strEstatus}`,
+            relations: this.relaciones,
+        });
     }
-    async get(id: number): Promise<Marca> {
+    async getById(id: number): Promise<Marca> {
         return await this.marcaRepo.findOne(id, {
             where: `Marca.empresa = ${this.authService.empresaActiva.id}`,
-            relations: [
-                'empresa',
-                'usuarioestatus',
-                'usuariomodificacion',
-            ],
+            relations: this.relaciones,
         });
     }
     async create(marca: MarcaDto): Promise<Marca> {
@@ -62,5 +66,23 @@ export class MarcaService {
     }
     async delete(id: number): Promise<DeleteResult> {
         return await this.marcaRepo.delete(id);
+    }
+
+    async search(term: string, incluirInactivos: string) {
+        let strEstatus: string;
+
+        if ( incluirInactivos === 'false' ) {
+            strEstatus = 'AND Marca.estatus = true ';
+        } else {
+            strEstatus = 'AND 1=1';
+        }
+
+        return await this.marcaRepo
+        .find( {
+            where: `Marca.empresa = ${this.authService.empresaActiva.id}
+             AND (LOWER(Marca.nombre) LIKE '%${term.toLowerCase()}%'
+             OR LOWER(Marca.descripcion) LIKE '%${term.toLowerCase()}%') ${strEstatus}`,
+            relations: this.relaciones,
+        });
     }
 }

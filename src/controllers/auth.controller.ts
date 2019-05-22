@@ -19,7 +19,7 @@ export class AuthController {
         // LOGIN
     @Post('login')
     public async login(@Res() response, @Body() login: LoginDto) {
-        this.usuarioService.GetByEmail(login.email).then(async ( usuario: Usuario ) => {
+        this.usuarioService.getByEmail(login.email).then(async ( usuario: Usuario ) => {
             if ( !usuario ) {
                 response.status(HttpStatus.OK).json(new CResponse(Status.NOT_FOUND_RECORD, 'El usuario proporcionado no existe'));
             } else {
@@ -28,7 +28,7 @@ export class AuthController {
 
                     if ( bcrypt.compareSync(login.password, usuario.password )) {
 
-                        const empresa = await this.empresaService.get(login.empresaId);
+                        const empresa = await this.empresaService.getById(login.empresaId);
                         if ( !empresa ) {
                             return response.status(HttpStatus.BAD_REQUEST)
                             .json(new CResponse(Status.ERROR, 'Credenciales Incorrectas', null, {message: 'La empresa no existe'}));
@@ -58,8 +58,8 @@ export class AuthController {
     }
     @Post('renuevatoken')
     public async renuevaToken(@Res() response, @Body() login: LoginDto) {
-        const empresa = await this.empresaService.get(login.empresaId);
-        const usuario = await this.usuarioService.GetByEmail(login.email);
+        const empresa = await this.empresaService.getById(login.empresaId);
+        const usuario = await this.usuarioService.getByEmail(login.email);
         const token = this.authService.crearToken(empresa, usuario);
 
         return response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', null, {

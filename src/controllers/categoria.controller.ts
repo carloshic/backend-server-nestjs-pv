@@ -1,4 +1,4 @@
-import { Controller, Res, Param, Body, Post, Put, Delete, Get, HttpStatus } from '@nestjs/common';
+import { Controller, Res, Param, Body, Post, Put, Delete, Get, HttpStatus, Query } from '@nestjs/common';
 import { CategoriaService } from '../services/categoria.service';
 import { Categoria } from '../entities/categoria.entity';
 import { CResponse } from '../utils/cresponse';
@@ -13,8 +13,8 @@ export class CategoriaController {
         private authService: AuthService ) { }
 
     @Get()
-    getAll(@Res() response) {
-        this.categoriaService.getAll().then(( categorias: Categoria[] ) => {
+    getAll(@Res() response, @Query('inactivos') incluirInactivos) {
+        this.categoriaService.getAll(incluirInactivos).then(( categorias: Categoria[] ) => {
             if ( categorias.length > 0 ) {
                 response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, categorias));
             } else {
@@ -31,7 +31,7 @@ export class CategoriaController {
         @Res() response,
         @Param('id') id,
     ) {
-        this.categoriaService.get(id).then(( categoria: Categoria ) => {
+        this.categoriaService.getById(id).then(( categoria: Categoria ) => {
             if ( categoria ) {
                 response.status(HttpStatus.OK)
                 .json(new CResponse(Status.OK, 'Exito', this.authService.token, categoria));
@@ -50,6 +50,7 @@ export class CategoriaController {
         @Body() body: CategoriaDto,
         @Res() response,
     ) {
+        console.log(body)
         this.categoriaService.create(body).then((categoria: Categoria) => {
             response.status(HttpStatus.OK)
             .json(new CResponse(Status.OK, 'Categoria creada correctamente', this.authService.token, categoria));

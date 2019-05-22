@@ -6,7 +6,7 @@ export class ProductoDto {
         public costo: number,
         public precio: number,
         public unidadId: number,
-        public stockMinimo: number,
+        public stockminimo: number,
         public marcaId: number,
         public categoriaId: number,
         public estatus: boolean,

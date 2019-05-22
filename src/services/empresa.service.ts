@@ -4,18 +4,25 @@ import { Repository, DeleteResult } from 'typeorm';
 import { Empresa } from '../entities/empresa.entity';
 import { EmpresaDto } from '../dto/empresa.dto';
 import { UsuarioService } from './usuario.service';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class EmpresaService {
     constructor(
         @InjectRepository(Empresa)
         private readonly empresaRepo: Repository<Empresa>,
-        private usuarioService: UsuarioService,
+        private authService: AuthService,
     ) {}
 
-    async getAll(): Promise<Empresa[]> {
+    async getAll(incluirInactivos = 'false'): Promise<Empresa[]> {
+        let strEstatus: string;
+        if ( incluirInactivos === 'false' ) {
+            strEstatus = 'Empresa.estatus = true ';
+        } else {
+            strEstatus = '1=1';
+        }
         return await this.empresaRepo.find(
-            {
+            {   where : `${strEstatus}`,
                 relations:
                 [
                     'usuarioestatus',
@@ -23,7 +30,7 @@ export class EmpresaService {
                 ],
             });
     }
-    async get(id: number): Promise<Empresa> {
+    async getById(id: number): Promise<Empresa> {
         return await this.empresaRepo.findOne(id, { relations:
             [
                 'usuarioestatus',
@@ -38,8 +45,8 @@ export class EmpresaService {
         nuevo.direccion = empresa.direccion;
         nuevo.logo = empresa.logo;
         nuevo.estatus = empresa.estatus;
-        nuevo.usuarioestatus = await this.usuarioService.Get(empresa.usuarioEstatus);
-        nuevo.usuariomodificacion = await this.usuarioService.Get(empresa.usuarioEstatus);
+        nuevo.usuarioestatus = this.authService.usuarioActivo;
+        nuevo.usuariomodificacion = this.authService.usuarioActivo;
         return await this.empresaRepo.save(nuevo);
 
     }

@@ -14,19 +14,29 @@ export class UsuarioService {
         private readonly usuarioRepo: Repository<Usuario>,
     ) {}
 
-    async GetAll(): Promise<Usuario[]> {
-        return await this.usuarioRepo.find();
+    async getAll(incluirInactivos = 'false'): Promise<Usuario[]> {
+        let strEstatus: string;
+
+        if ( incluirInactivos === 'false' ) {
+            strEstatus = ' Usuario.estatus = true ';
+        } else {
+            strEstatus = '';
+        }
+
+        return await this.usuarioRepo.find({
+            where: `${strEstatus}`,
+        });
     }
 
-    async Get(id: number): Promise<Usuario> {
+    async getById(id: number): Promise<Usuario> {
         return await this.usuarioRepo.findOne(id);
     }
 
-    async GetByEmail(email: string): Promise<Usuario> {
+    async getByEmail(email: string): Promise<Usuario> {
         return await this.usuarioRepo.findOne( { email } );
     }
 
-    async Create(usuario: UsuarioDto): Promise<Usuario> {
+    async create(usuario: UsuarioDto): Promise<Usuario> {
         const nuevo = new Usuario();
         nuevo.email = usuario.email;
         nuevo.google = usuario.google;
@@ -38,7 +48,7 @@ export class UsuarioService {
         return await this.usuarioRepo.save(nuevo);
     }
 
-    async Update(id: number, usuario: UsuarioDto): Promise<Usuario> {
+    async update(id: number, usuario: UsuarioDto): Promise<Usuario> {
         const usuarioActualizar = await this.usuarioRepo.findOne(id);
         usuarioActualizar.email = usuario.email;
         usuarioActualizar.google = usuario.google;
@@ -51,7 +61,7 @@ export class UsuarioService {
         return await this.usuarioRepo.save(usuarioActualizar);
     }
 
-    async Delete(id: number) {
+    async delete(id: number) {
         return await this.usuarioRepo.delete(id);
     }
 
@@ -69,8 +79,15 @@ export class UsuarioService {
         return await this.usuarioRepo.save(usuarioActualizar);
     }
 
-    async Seach(term: string) {
+    async search(term: string, incluirInactivos: string) {
+        let strEstatus: string;
+        if ( incluirInactivos === 'false' ) {
+            strEstatus = 'AND Usuario.estatus = true ';
+        } else {
+            strEstatus = '';
+        }
         return await this.usuarioRepo
-        .find( { where: `LOWER(Usuario.email) LIKE '%${term.toLowerCase()}%' OR LOWER(Usuario.nombre) LIKE '%${term.toLowerCase()}%' ` } );
+        .find( { where: `(LOWER(Usuario.email) LIKE '%${term.toLowerCase()}%' OR LOWER(Usuario.nombre) LIKE '%${term.toLowerCase()}%')
+        ${strEstatus}` } );
     }
  }

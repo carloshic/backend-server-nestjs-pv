@@ -1,11 +1,17 @@
-import { Controller, Get, Res, Param, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Res, Param, HttpStatus, Query } from '@nestjs/common';
 import { UsuarioService } from '../services/usuario.service';
 import { CResponse } from '../utils/cresponse';
 import { Status } from '../utils/status-response';
 import { Usuario } from '../entities/usuario.entity';
 import { AuthService } from '../services/auth.service';
 import { ProductoService } from '../services/producto.service';
-import { Producto } from 'src/entities/producto.entity';
+import { Producto } from '../entities/producto.entity';
+import { MarcaService } from '../services/marca.service';
+import { Marca } from '../entities/marca.entity';
+import { Categoria } from '../entities/categoria.entity';
+import { CategoriaService } from '../services/categoria.service';
+import { UnidadService } from '../services/unidad.service';
+import { Unidad } from '../entities/unidad.entity';
 
 @Controller('busqueda')
 export class BusquedaController {
@@ -14,6 +20,9 @@ export class BusquedaController {
         private usuarioService: UsuarioService,
         private authService: AuthService,
         private productoService: ProductoService,
+        private marcaService: MarcaService,
+        private categoriaService: CategoriaService,
+        private unidadService: UnidadService,
         ) { }
 
     @Get(':tipo/:term')
@@ -21,22 +30,48 @@ export class BusquedaController {
         @Res() response,
         @Param('tipo') tipo: string,
         @Param('term') term: string,
+        @Query('inactivos') incluirInactivos,
     ) {
+
         switch ( tipo ) {
             case 'usuario':
-                this.usuarioService.Seach(term).then(( usuarios: Usuario[] ) => {
+                this.usuarioService.search(term, incluirInactivos).then(( usuarios: Usuario[] ) => {
                     response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, usuarios));
                 }).catch((error) => {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json(new CResponse(Status.ERROR, 'Ocurrio un error al buscar usuarios', this.authService.token, {}, error));
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al buscar usuarios', this.authService.token, {}, error));
                 });
                 break;
             case 'producto':
-                this.productoService.seach(term).then(( productos: Producto[] ) => {
+                this.productoService.search(term, incluirInactivos).then(( productos: Producto[] ) => {
                     response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, productos));
                 }).catch((error) => {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json(new CResponse(Status.ERROR, 'Ocurrio un error al buscar productos', this.authService.token, {}, error));
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al buscar productos', this.authService.token, {}, error));
+                });
+                break;
+            case 'unidad':
+                this.unidadService.search(term, incluirInactivos).then(( unidades: Unidad[] ) => {
+                    response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, unidades));
+                }).catch((error) => {
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al buscar unidades', this.authService.token, {}, error));
+                });
+                break;
+            case 'marca':
+                this.marcaService.search(term, incluirInactivos).then(( marcas: Marca[] ) => {
+                    response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, marcas));
+                }).catch((error) => {
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar marcas', this.authService.token, {}, error));
+                });
+                break;
+            case 'categoria':
+                this.categoriaService.search(term, incluirInactivos).then(( categorias: Categoria[] ) => {
+                    response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, categorias));
+                }).catch((error) => {
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar categorias', this.authService.token, {}, error));
                 });
                 break;
             default:

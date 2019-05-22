@@ -1,4 +1,4 @@
-import { Controller, Res, Param, Body, Post, Put, Delete, Get, HttpStatus } from '@nestjs/common';
+import { Controller, Res, Param, Body, Post, Put, Delete, Get, HttpStatus, Query } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { CResponse } from '../utils/cresponse';
 import { Status } from '../utils/status-response';
@@ -12,8 +12,8 @@ export class MarcaController {
         private marcaService: MarcaService,
         private authService: AuthService) { }
     @Get()
-    getAll(@Res() response) {
-        this.marcaService.getAll().then(( Marcas: Marca[] ) => {
+    getAll(@Res() response, @Query('inactivos') incluirInactivos)  {
+        this.marcaService.getAll(incluirInactivos).then(( Marcas: Marca[] ) => {
             if ( Marcas.length > 0 ) {
                 response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, Marcas));
             } else {
@@ -30,7 +30,7 @@ export class MarcaController {
         @Res() response,
         @Param('id') id,
     ) {
-        this.marcaService.get(id).then(( marca: Marca ) => {
+        this.marcaService.getById(id).then(( marca: Marca ) => {
             if ( marca ) {
                 response.status(HttpStatus.OK)
                 .json(new CResponse(Status.OK, 'Exito', this.authService.token, marca));
