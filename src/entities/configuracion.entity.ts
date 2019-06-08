@@ -4,11 +4,13 @@ import {
     ManyToOne,
     UpdateDateColumn,
     PrimaryGeneratedColumn,
+    Unique,
 } from 'typeorm';
 import { Usuario } from './usuario.entity';
 import { Empresa } from './empresa.entity';
 
 @Entity()
+@Unique(['empresa', 'codigo'])
 export class Configuracion {
 
 @PrimaryGeneratedColumn()
@@ -21,7 +23,7 @@ empresa: Empresa;
 codigo: string;
 
 @Column()
-descripcion: string;
+valor: string;
 
 @UpdateDateColumn()
 fechamodificacion: Date;

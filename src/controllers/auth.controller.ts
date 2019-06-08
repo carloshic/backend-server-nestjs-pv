@@ -21,7 +21,7 @@ export class AuthController {
     public async login(@Res() response, @Body() login: LoginDto) {
         this.usuarioService.getByEmail(login.email).then(async ( usuario: Usuario ) => {
             if ( !usuario ) {
-                response.status(HttpStatus.OK).json(new CResponse(Status.NOT_FOUND_RECORD, 'El usuario proporcionado no existe'));
+                response.status(HttpStatus.OK).json(new CResponse(Status.NO_RECORDS_FOUND, 'El usuario proporcionado no existe'));
             } else {
 
                 if ( usuario.estatus) {

@@ -17,7 +17,7 @@ export class MarcaController {
             if ( Marcas.length > 0 ) {
                 response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, Marcas));
             } else {
-                response.status(HttpStatus.OK).json(new CResponse(Status.NOT_FOUND_RECORD, 'No hay marcas registradas'));
+                response.status(HttpStatus.OK).json(new CResponse(Status.NO_RECORDS_FOUND, 'No hay marcas registradas', this.authService.token));
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -36,7 +36,7 @@ export class MarcaController {
                 .json(new CResponse(Status.OK, 'Exito', this.authService.token, marca));
             } else {
                 response.status(HttpStatus.OK)
-                .json(new CResponse(Status.NOT_FOUND_RECORD, `La marca con ID: ${  id.toString() } no existe`));
+                .json(new CResponse(Status.NO_RECORDS_FOUND, `La marca con ID: ${  id.toString() } no existe`, this.authService.token));
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -82,7 +82,7 @@ export class MarcaController {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Marca borrada con exito'), this.authService.token);
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al borrar la marca', this.authService.token , {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al borrar la marca', this.authService.token , this.authService.token, error));
         });
     }
 }

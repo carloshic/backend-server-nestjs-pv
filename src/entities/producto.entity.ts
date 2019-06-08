@@ -13,7 +13,7 @@ import { Categoria } from './categoria.entity';
 import { Unidad } from './unidad.entity';
 
 @Entity()
-@Unique(['codigo'])
+@Unique(['empresa', 'codigo'])
 export class Producto {
 
 @PrimaryGeneratedColumn()

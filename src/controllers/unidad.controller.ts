@@ -18,7 +18,7 @@ export class UnidadController {
             if ( unidades.length > 0 ) {
                 response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, unidades));
             } else {
-                response.status(HttpStatus.OK).json(new CResponse(Status.NOT_FOUND_RECORD, 'No hay unidades registradas'));
+                response.status(HttpStatus.OK).json(new CResponse(Status.NO_RECORDS_FOUND, 'No hay unidades registradas', this.authService.token));
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -37,7 +37,7 @@ export class UnidadController {
                 .json(new CResponse(Status.OK, 'Exito', this.authService.token, unidad));
             } else {
                 response.status(HttpStatus.OK)
-                .json(new CResponse(Status.NOT_FOUND_RECORD, `La unidad con ID: ${  id.toString() } no existe`));
+                .json(new CResponse(Status.NO_RECORDS_FOUND, `La unidad con ID: ${  id.toString() } no existe`), this.authService.token);
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -80,7 +80,7 @@ export class UnidadController {
         @Param('id') id: number,
     )  {
         this.unidadService.delete(id).then(() => {
-            response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Unidad borrada con exito'), this.authService.token);
+            response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Unidad borrada con exito', this.authService.token));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .json(new CResponse(Status.ERROR, 'Ocurrió un error al borrar la unidad', this.authService.token , {}, error));

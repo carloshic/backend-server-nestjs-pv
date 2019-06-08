@@ -56,7 +56,9 @@ export class ProductoService {
     }
 
     async getByCode(codigo: string) {
-        return await this.productoRepo.findOne( { codigo } );
+        return await this.productoRepo.findOne( { codigo }, {
+            where: `Producto.empresa = ${this.authService.empresaActiva.id}`,
+        } );
     }
 
     async create(producto: ProductoDto): Promise<Producto> {

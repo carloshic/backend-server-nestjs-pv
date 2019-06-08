@@ -28,16 +28,31 @@ import { Unidad } from './entities/unidad.entity';
 import { Producto } from './entities/producto.entity';
 import { AuthMiddleware } from './middlewares/auth.middleware';
 import { ValidadorController } from './controllers/validador.controller';
+import { ConfiguracionService } from './services/configuracion.service';
+import { ConfiguracionController } from './controllers/configuracion.controller';
+import { Configuracion } from './entities/configuracion.entity';
+import { Operacion } from './entities/operacion.entity';
+import { DetalleOperacion } from './entities/detalle-operacion.entity';
+import { TipoOperacion } from './entities/tipo-operacion.entity';
+import { Persona } from './entities/persona.entity';
+import { Caja } from './entities/caja.entity';
+import { OperacionService } from './services/operacion.service';
+import { OperacionController } from './controllers/operacion.controller';
+import { PersonaController } from './controllers/persona.controller';
+import { PersonaService } from './services/persona.service';
+import { TipoOperacionService } from './services/tipo-operacion.service';
+import { TipoOperacionController } from './controllers/tipo-operacion.controller';
 // ORM Config
 // Services
-// Controllers
+// Controllers 
 // Entities
 // Middlewares
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(ORM_CONFIG),
-    TypeOrmModule.forFeature([Usuario, Empresa, Categoria, Marca, Unidad, Producto]),
+    TypeOrmModule.forFeature([Usuario, Empresa, Categoria, Marca, Unidad, Producto,
+      Configuracion, Operacion, DetalleOperacion, TipoOperacion, Persona, Caja]),
   ],
   controllers: [AppController,
     AuthController,
@@ -52,8 +67,15 @@ import { ValidadorController } from './controllers/validador.controller';
     ProductoController,
     UnidadController,
     ValidadorController,
+    ConfiguracionController,
+    OperacionController,
+    PersonaController,
+    TipoOperacionController,
   ],
-  providers: [AppService, AuthService, EmpresaService, UsuarioService, CategoriaService, MarcaService, ProductoService, UnidadService],
+  providers: [
+    AppService, AuthService, EmpresaService, UsuarioService, CategoriaService,
+    MarcaService, ProductoService, UnidadService, ConfiguracionService, OperacionService, PersonaService, TipoOperacionService,
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer ) {
@@ -64,5 +86,8 @@ export class AppModule {
     consumer.apply(AuthMiddleware).forRoutes(CategoriaController);
     consumer.apply(AuthMiddleware).forRoutes(ProductoController);
     consumer.apply(AuthMiddleware).forRoutes(UnidadController);
+    consumer.apply(AuthMiddleware).forRoutes(ConfiguracionController);
+    consumer.apply(AuthMiddleware).forRoutes(PersonaController);
+    consumer.apply(AuthMiddleware).forRoutes(TipoOperacionController);
   }
 }

@@ -54,7 +54,7 @@ export class UnidadService {
         if ( incluirInactivos === 'false' ) {
             strEstatus = 'AND Unidad.estatus = true ';
         } else {
-            strEstatus = 'AND 1=1';
+            strEstatus = '';
         }
 
         return await this.unidadRepo

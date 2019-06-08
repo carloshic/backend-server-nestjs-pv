@@ -5,6 +5,7 @@ import {
     ManyToOne,
     UpdateDateColumn,
     Unique,
+    OneToOne,
 } from 'typeorm';
 import { Usuario } from './usuario.entity';
 import { Empresa } from './empresa.entity';
@@ -12,7 +13,6 @@ import { Operacion } from './operacion.entity';
 import { Producto } from './producto.entity';
 
 @Entity()
-@Unique(['codigo'])
 export class DetalleOperacion {
 
 @PrimaryGeneratedColumn()
@@ -24,7 +24,9 @@ empresa: Empresa;
 @ManyToOne(type => Operacion, operacion => operacion.id)
 operacion: Operacion;
 
-@ManyToOne(type => Producto, producto => producto.id)
+@OneToOne(type => Producto, producto => producto.id, {
+    eager: true,
+})
 producto: Producto;
 
 @Column()

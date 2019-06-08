@@ -18,7 +18,7 @@ export class CategoriaController {
             if ( categorias.length > 0 ) {
                 response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, categorias));
             } else {
-                response.status(HttpStatus.OK).json(new CResponse(Status.NOT_FOUND_RECORD, 'No hay categorias registradas'));
+                response.status(HttpStatus.OK).json(new CResponse(Status.NO_RECORDS_FOUND, 'No hay categorias registradas', this.authService.token));
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -37,7 +37,7 @@ export class CategoriaController {
                 .json(new CResponse(Status.OK, 'Exito', this.authService.token, categoria));
             } else {
                 response.status(HttpStatus.OK)
-                .json(new CResponse(Status.NOT_FOUND_RECORD, `La categoria con ID: ${  id.toString() } no existe`), this.authService.token);
+                .json(new CResponse(Status.NO_RECORDS_FOUND, `La categoria con ID: ${  id.toString() } no existe`, this.authService.token));
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -50,7 +50,6 @@ export class CategoriaController {
         @Body() body: CategoriaDto,
         @Res() response,
     ) {
-        console.log(body)
         this.categoriaService.create(body).then((categoria: Categoria) => {
             response.status(HttpStatus.OK)
             .json(new CResponse(Status.OK, 'Categoria creada correctamente', this.authService.token, categoria));
@@ -81,7 +80,7 @@ export class CategoriaController {
         @Param('id') id: number,
     )  {
         this.categoriaService.delete(id).then((categoria) => {
-            response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Categoria borrada con exito'), this.authService.token);
+            response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Categoria borrada con exito', this.authService.token));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .json(new CResponse(Status.ERROR, 'Error al borrar la categoria', this.authService.token , {}, error));

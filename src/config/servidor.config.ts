@@ -5,6 +5,12 @@ import { Categoria } from '../entities/categoria.entity';
 import { Marca } from '../entities/marca.entity';
 import { Unidad } from '../entities/unidad.entity';
 import { Producto } from '../entities/producto.entity';
+import { Configuracion } from '../entities/configuracion.entity';
+import { Operacion } from '../entities/operacion.entity';
+import { DetalleOperacion } from '../entities/detalle-operacion.entity';
+import { TipoOperacion } from '../entities/tipo-operacion.entity';
+import { Persona } from '../entities/persona.entity';
+import { Caja } from '../entities/caja.entity';
 export const ORM_CONFIG: TypeOrmModuleOptions = {
     type : 'postgres',
     host : 'localhost',
@@ -12,6 +18,7 @@ export const ORM_CONFIG: TypeOrmModuleOptions = {
     username : 'adminpro',
     password : '123456',
     database : 'villapudua',
-    entities : [Usuario, Empresa, Categoria, Marca, Unidad, Producto], //['src/**/*.entity{.ts,.js}'], 
+    entities : [Usuario, Empresa, Categoria, Marca, Unidad, Producto,
+        Configuracion, Operacion, DetalleOperacion, TipoOperacion, Persona, Caja, TipoOperacion ], //['src/**/*.entity{.ts,.js}'], 
     synchronize : true,
 };

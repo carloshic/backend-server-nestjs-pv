@@ -19,6 +19,9 @@ codigo: string;
 @Column()
 nombre: string;
 
+@Column()
+naturaleza: number;
+
 @UpdateDateColumn()
 fechamodificacion: Date;
 

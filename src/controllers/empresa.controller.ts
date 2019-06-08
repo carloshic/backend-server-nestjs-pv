@@ -18,7 +18,7 @@ export class EmpresaController {
             if ( empresas.length > 0 ) {
                 response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', null, empresas));
             } else {
-                response.status(HttpStatus.OK).json(new CResponse(Status.NOT_FOUND_RECORD, 'No hay empresas registradas'));
+                response.status(HttpStatus.OK).json(new CResponse(Status.NO_RECORDS_FOUND, 'No hay empresas registradas', this.authService.token));
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -34,7 +34,7 @@ export class EmpresaController {
                 .json(new CResponse(Status.OK, 'Exito', null, empresa));
             } else {
                 response.status(HttpStatus.OK)
-                .json(new CResponse(Status.NOT_FOUND_RECORD, `La empresa con ID: ${  id.toString() } no existe`));
+                .json(new CResponse(Status.NO_RECORDS_FOUND, `La empresa con ID: ${  id.toString() } no existe`));
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(new CResponse(Status.ERROR, 'Error al obtener la empresa', null, {}, error));
@@ -44,7 +44,7 @@ export class EmpresaController {
     @Post()
     create(@Body() empresaDto: EmpresaDto, @Res() response) {
         this.empresaService.create(empresaDto).then((empresa) => {
-            response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Empresa creada correctamente', this.authService.token, empresa));
+            response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Empresa creada correctamente', null, empresa));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .json(new CResponse(Status.ERROR, 'Error al crear la nueva empresa', null, {}, error));
@@ -54,7 +54,7 @@ export class EmpresaController {
     @Put(':id')
     update(@Body() empresaDto: EmpresaDto, @Res() response, @Param('id') id: number) {
         this.empresaService.update(id, empresaDto).then((empresa) => {
-            response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Empresa actualizada con exito', this.authService.token, empresa));
+            response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Empresa actualizada con exito', null, empresa));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .json(new CResponse(Status.ERROR, 'Error al acutalizar la empresa', null, {}, error));
@@ -67,7 +67,7 @@ export class EmpresaController {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Empresa borrada con exito'));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al borrar la empresa', this.authService.token , {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al borrar la empresa', null , {}, error));
         });
     }
 }

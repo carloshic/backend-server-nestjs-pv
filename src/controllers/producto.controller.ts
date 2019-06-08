@@ -18,7 +18,7 @@ export class ProductoController {
             if ( productos.length > 0 ) {
                 response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, productos));
             } else {
-                response.status(HttpStatus.OK).json(new CResponse(Status.NOT_FOUND_RECORD, 'No hay productos registradas'));
+                response.status(HttpStatus.OK).json(new CResponse(Status.NO_RECORDS_FOUND, 'No hay productos registradas', this.authService.token));
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -37,7 +37,26 @@ export class ProductoController {
                 .json(new CResponse(Status.OK, 'Exito', this.authService.token, producto));
             } else {
                 response.status(HttpStatus.OK)
-                .json(new CResponse(Status.NOT_FOUND_RECORD, `El producto con ID: ${  id.toString() } no existe`));
+                .json(new CResponse(Status.NO_RECORDS_FOUND, `El producto con ID: ${  id.toString() } no existe`, this.authService.token));
+            }
+        }).catch((error) => {
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .json(new CResponse(Status.ERROR, 'Error al obtener la producto', this.authService.token, {}, error));
+        });
+    }
+
+    @Get('/codigo/:codigo')
+    getByCode(
+        @Res() response,
+        @Param('codigo') id,
+    ) {
+        this.productService.getByCode(id).then(( producto: Producto ) => {
+            if ( producto ) {
+                response.status(HttpStatus.OK)
+                .json(new CResponse(Status.OK, 'Exito', this.authService.token, producto));
+            } else {
+                response.status(HttpStatus.OK)
+                .json(new CResponse(Status.NO_RECORDS_FOUND, `El producto con codigo: ${  id.toString() } no existe`, this.authService.token));
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
