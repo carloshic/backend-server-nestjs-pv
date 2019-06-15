@@ -16,8 +16,6 @@ GRANT ALL ON DATABASE villapudua TO postgres;
 
 GRANT TEMPORARY, CONNECT ON DATABASE villapudua TO PUBLIC;
 
-GRANT ALL ON DATABASE villapudua TO adminpro WITH GRANT OPTION;
-
 
 -- Crear usuario de aplicacion
 CREATE USER adminpro WITH
@@ -31,6 +29,9 @@ COMMENT ON ROLE adminpro IS 'Usuario para sistema adminpro';
 
 ALTER USER adminpro WITH PASSWORD '123456';
 ALTER USER adminpro VALID UNTIL 'infinity';
+
+
+GRANT ALL ON DATABASE villapudua TO adminpro WITH GRANT OPTION;
 
 
 -- Iniciar la aplicacion por primera vez antes de ejecutar el siguiente codigo
