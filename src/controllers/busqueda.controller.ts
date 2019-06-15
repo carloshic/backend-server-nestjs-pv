@@ -14,6 +14,8 @@ import { UnidadService } from '../services/unidad.service';
 import { Unidad } from '../entities/unidad.entity';
 import { ConfiguracionService } from '../services/configuracion.service';
 import { Configuracion } from '../entities/configuracion.entity';
+import { Persona } from 'src/entities/persona.entity';
+import { PersonaService } from '../services/persona.service';
 
 @Controller('busqueda')
 export class BusquedaController {
@@ -26,6 +28,7 @@ export class BusquedaController {
         private categoriaService: CategoriaService,
         private unidadService: UnidadService,
         private configuracionService: ConfiguracionService,
+        private personaService: PersonaService,
         ) { }
 
     @Get(':tipo/:term')
@@ -76,14 +79,23 @@ export class BusquedaController {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar categorias', this.authService.token, {}, error));
                 });
-                case 'configuracion':
-                    this.configuracionService.search(term, incluirInactivos).then(( configuraciones: Configuracion[] ) => {
-                        response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, configuraciones));
-                    }).catch((error) => {
-                        response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar configuraciones', this.authService.token, {}, error));
-                    });
-                    break;
+                break;
+            case 'configuracion':
+                this.configuracionService.search(term, incluirInactivos).then(( configuraciones: Configuracion[] ) => {
+                    response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, configuraciones));
+                }).catch((error) => {
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar configuraciones', this.authService.token, {}, error));
+                });
+                break;
+            case 'persona':
+                this.personaService.search(term, incluirInactivos).then(( personas: Persona[] ) => {
+                    response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, personas));
+                }).catch((error) => {
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar personas', this.authService.token, {}, error));
+                });
+                break;
             default:
                 return response.status(HttpStatus.BAD_REQUEST)
                 .json(new CResponse(Status.ERROR, 'Tipo de busqueda no admitida', this.authService.token));

@@ -14,7 +14,7 @@ import { PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 @Unique(['producto'])
-export class Stock {
+export class Inventario {
 
 @PrimaryGeneratedColumn()
 id: number;

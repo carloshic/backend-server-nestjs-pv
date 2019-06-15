@@ -42,6 +42,9 @@ import { PersonaController } from './controllers/persona.controller';
 import { PersonaService } from './services/persona.service';
 import { TipoOperacionService } from './services/tipo-operacion.service';
 import { TipoOperacionController } from './controllers/tipo-operacion.controller';
+import { InventarioService } from './services/inventario.service';
+import { InventarioController } from './controllers/inventario.controller';
+import { Inventario } from './entities/inventario.entity';
 // ORM Config
 // Services
 // Controllers 
@@ -52,7 +55,7 @@ import { TipoOperacionController } from './controllers/tipo-operacion.controller
   imports: [
     TypeOrmModule.forRoot(ORM_CONFIG),
     TypeOrmModule.forFeature([Usuario, Empresa, Categoria, Marca, Unidad, Producto,
-      Configuracion, Operacion, DetalleOperacion, TipoOperacion, Persona, Caja]),
+      Configuracion, Operacion, DetalleOperacion, TipoOperacion, Persona, Caja, Inventario]),
   ],
   controllers: [AppController,
     AuthController,
@@ -71,11 +74,13 @@ import { TipoOperacionController } from './controllers/tipo-operacion.controller
     OperacionController,
     PersonaController,
     TipoOperacionController,
+    InventarioController,
   ],
   providers: [
-    AppService, AuthService, EmpresaService, UsuarioService, CategoriaService,
-    MarcaService, ProductoService, UnidadService, ConfiguracionService, OperacionService, PersonaService, TipoOperacionService,
+    AppService, ConfiguracionService,AuthService, EmpresaService, UsuarioService, CategoriaService,
+    MarcaService, ProductoService, UnidadService,  OperacionService, PersonaService, TipoOperacionService, InventarioService,
   ],
+  exports: [ ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer ) {
@@ -89,5 +94,6 @@ export class AppModule {
     consumer.apply(AuthMiddleware).forRoutes(ConfiguracionController);
     consumer.apply(AuthMiddleware).forRoutes(PersonaController);
     consumer.apply(AuthMiddleware).forRoutes(TipoOperacionController);
+    consumer.apply(AuthMiddleware).forRoutes(InventarioController);
   }
 }

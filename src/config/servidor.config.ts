@@ -11,6 +11,7 @@ import { DetalleOperacion } from '../entities/detalle-operacion.entity';
 import { TipoOperacion } from '../entities/tipo-operacion.entity';
 import { Persona } from '../entities/persona.entity';
 import { Caja } from '../entities/caja.entity';
+import { Inventario } from '../entities/inventario.entity';
 export const ORM_CONFIG: TypeOrmModuleOptions = {
     type : 'postgres',
     host : 'localhost',
@@ -19,6 +20,6 @@ export const ORM_CONFIG: TypeOrmModuleOptions = {
     password : '123456',
     database : 'villapudua',
     entities : [Usuario, Empresa, Categoria, Marca, Unidad, Producto,
-        Configuracion, Operacion, DetalleOperacion, TipoOperacion, Persona, Caja, TipoOperacion ], //['src/**/*.entity{.ts,.js}'], 
+        Configuracion, Operacion, DetalleOperacion, TipoOperacion, Persona, Caja, TipoOperacion,Inventario ], //['src/**/*.entity{.ts,.js}'], 
     synchronize : true,
 };

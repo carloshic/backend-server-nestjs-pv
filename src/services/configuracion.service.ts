@@ -12,9 +12,9 @@ export class ConfiguracionService {
         'usuariomodificacion',
     ];
     constructor(
+        private authService: AuthService,
         @InjectRepository(Configuracion)
         private readonly configuracionRepo: Repository<Configuracion>,
-        private authService: AuthService,
     ) { }
 
     async getAll(): Promise<Configuracion[]> {
@@ -33,6 +33,13 @@ export class ConfiguracionService {
     async getByCode(codigo: string): Promise<Configuracion> {
         return await this.configuracionRepo.findOne({
             where : { empresa : Equal(this.authService.empresaActiva.id), codigo: Equal(codigo) },
+            relations: this.relaciones,
+        });
+    }
+
+    async getByCodeExt(codigo: string, empresaId: number): Promise<Configuracion> {
+        return await this.configuracionRepo.findOne({
+            where : { empresa : Equal(empresaId), codigo: Equal(codigo) },
             relations: this.relaciones,
         });
     }

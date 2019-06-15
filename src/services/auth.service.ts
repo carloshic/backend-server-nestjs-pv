@@ -1,11 +1,10 @@
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
-import { UsuarioService } from './usuario.service';
 import { Usuario } from '../entities/usuario.entity';
 import { Empresa } from '../entities/empresa.entity';
-import { SEED, SESSION_TIMEOUT} from '../config/auth.config';
+import { SEED} from '../config/auth.config';
 import { IToken } from '../interfaces/token.interface';
 
 @Injectable()
@@ -18,21 +17,19 @@ export class AuthService {
     // tslint:disable-next-line: variable-name
     private _usuarioActivo: Usuario;
 
+    crearToken(empresa: Empresa, usuario: Usuario, timeout: number): IToken {
+        const CONFIG_SESSION_TIMEOUT = timeout;
 
-    constructor( private usuarioService: UsuarioService ) {
-
-    }
-    crearToken(empresa: Empresa, usuario: Usuario): IToken {
         const accessToken = jwt.sign({
             empresa,
             usuario,
-         }, SEED, { expiresIn: SESSION_TIMEOUT });
+         }, SEED, { expiresIn: CONFIG_SESSION_TIMEOUT });
 
         this._empresaActiva = empresa;
         this._usuarioActivo = usuario;
 
         this._token = {
-            expiresIn: SESSION_TIMEOUT,
+            expiresIn: CONFIG_SESSION_TIMEOUT,
             accessToken,
         };
         return this.token;

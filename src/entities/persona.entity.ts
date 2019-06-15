@@ -20,30 +20,34 @@ empresa: Empresa;
 @Column()
 nombre: string;
 
-@Column()
+@Column( {nullable: true})
 nombreempresa: string;
 
-@Column()
+@Column({nullable: true})
 direccion: string;
 
-@Column()
+@Column({nullable: true})
 telefono: string;
 
-@Column()
+@Column({nullable: true})
 correo: string;
 
-@Column()
+@Column({nullable: false})
 tipo: string;
 
-@Column()
+@Column({nullable: false})
 estatus: boolean;
 
-@ManyToOne(type => Usuario, usuario => usuario.id)
+@ManyToOne(type => Usuario, usuario => usuario.id, {
+    eager: true,
+})
 usuarioestatus: Usuario;
 
 @UpdateDateColumn()
 fechamodificacion: Date;
 
-@ManyToOne(type => Usuario, usuario => usuario.id)
+@ManyToOne(type => Usuario, usuario => usuario.id, {
+    eager: true,
+})
 usuariomodificacion: Usuario;
 }

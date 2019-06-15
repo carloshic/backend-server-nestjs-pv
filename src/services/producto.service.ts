@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult, getConnection } from 'typeorm';
 import { Producto } from '../entities/producto.entity';
 import { ProductoDto } from '../dto/producto.dto';
 import { AuthService } from './auth.service';
@@ -10,20 +10,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ROOT_APP } from '../global';
+import { Inventario } from '../entities/Inventario.entity';
 
 @Injectable()
 export class ProductoService {
     private readonly relaciones = [
-        'empresa',
-        'unidad',
-        'categoria',
-        'usuarioestatus',
-        'marca',
-        'usuariomodificacion',
+        // 'empresa',
+        // 'unidad',
+        // 'categoria',
+        // 'usuarioestatus',
+        // 'marca',
+        // 'usuariomodificacion',
     ];
     constructor(
         @InjectRepository(Producto)
         private readonly productoRepo: Repository<Producto>,
+        @InjectRepository(Inventario)
+        private readonly inventarioRepo: Repository<Inventario>,
         private authService: AuthService,
         private marcaService: MarcaService,
         private categoriaService: CategoriaService,
@@ -58,26 +61,49 @@ export class ProductoService {
     async getByCode(codigo: string) {
         return await this.productoRepo.findOne( { codigo }, {
             where: `Producto.empresa = ${this.authService.empresaActiva.id}`,
+            relations: this.relaciones,
         } );
     }
 
     async create(producto: ProductoDto): Promise<Producto> {
-        const nuevoProducto: Producto = new Producto();
-        nuevoProducto.empresa = this.authService.empresaActiva;
-        nuevoProducto.codigo = producto.codigo;
-        nuevoProducto.nombre = producto.nombre;
-        nuevoProducto.descripcion = producto.descripcion;
-        nuevoProducto.costo = producto.costo;
-        nuevoProducto.precio = producto.precio;
-        nuevoProducto.unidad = await this.unidadService.getById(producto.unidadId);
-        nuevoProducto.stockminimo = producto.stockminimo;
-        nuevoProducto.marca = await this.marcaService.getById(producto.marcaId);
-        nuevoProducto.categoria = await this.categoriaService.getById(producto.categoriaId);
-        nuevoProducto.estatus = producto.estatus;
-        nuevoProducto.usuarioestatus = this.authService.usuarioActivo;
-        nuevoProducto.usuariomodificacion = this.authService.usuarioActivo;
-        return await this.productoRepo.save(nuevoProducto);
+         return new Promise(async (resolve, reject) => {
+            const queryRunner = getConnection().createQueryRunner();
+            await queryRunner.startTransaction();
 
+            try {
+                const nuevoProducto: Producto = new Producto();
+                const inventario: Inventario = new Inventario();
+                nuevoProducto.empresa = this.authService.empresaActiva;
+                nuevoProducto.codigo = producto.codigo;
+                nuevoProducto.nombre = producto.nombre;
+                nuevoProducto.descripcion = producto.descripcion;
+                nuevoProducto.costo = producto.costo;
+                nuevoProducto.precio = producto.precio;
+                nuevoProducto.unidad = await this.unidadService.getById(producto.unidadId);
+                nuevoProducto.stockminimo = producto.stockminimo;
+                nuevoProducto.marca = await this.marcaService.getById(producto.marcaId);
+                nuevoProducto.categoria = await this.categoriaService.getById(producto.categoriaId);
+                nuevoProducto.estatus = producto.estatus;
+                nuevoProducto.usuarioestatus = this.authService.usuarioActivo;
+                nuevoProducto.usuariomodificacion = this.authService.usuarioActivo;
+
+                const productoBD: Producto = await queryRunner.manager.save(nuevoProducto);
+
+                inventario.empresa = this.authService.empresaActiva;
+                inventario.producto = productoBD;
+                inventario.stock = 0;
+                inventario.usuariomodificacion = this.authService.usuarioActivo;
+
+                await queryRunner.manager.save(Inventario);
+                await queryRunner.commitTransaction();
+                await queryRunner.release();
+                resolve(productoBD);
+            } catch (error) {
+                await queryRunner.rollbackTransaction();
+                await queryRunner.release();
+                reject(error);
+            }
+        });
     }
     async update( id: number, producto: ProductoDto ): Promise<Producto> {
 

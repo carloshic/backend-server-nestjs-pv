@@ -37,7 +37,9 @@ costo: number;
 @Column('decimal', { precision: 8, scale: 2 })
 precio: number;
 
-@ManyToOne(type => Unidad, unidad => unidad.id)
+@ManyToOne(type => Unidad, unidad => unidad.id, {
+    eager: true,
+})
 unidad: Unidad;
 
 @Column()
@@ -46,21 +48,29 @@ stockminimo: number;
 @Column({ nullable: true})
 imagen: string;
 
-@ManyToOne(type => Marca, marca => marca.id)
+@ManyToOne(type => Marca, marca => marca.id, {
+    eager: true,
+})
 marca: Marca;
 
-@ManyToOne(type => Categoria, categoria => categoria.id)
+@ManyToOne(type => Categoria, categoria => categoria.id, {
+    eager: true,
+})
 categoria: Categoria;
 
 @Column()
 estatus: boolean;
 
-@ManyToOne(type => Usuario, usuario => usuario.id)
+@ManyToOne(type => Usuario, usuario => usuario.id, {
+    eager: true,
+})
 usuarioestatus: Usuario;
 
 @UpdateDateColumn()
 fechamodificacion: Date;
 
-@ManyToOne(type => Usuario, usuario => usuario.id)
+@ManyToOne(type => Usuario, usuario => usuario.id, {
+    eager: true,
+})
 usuariomodificacion: Usuario;
 }
