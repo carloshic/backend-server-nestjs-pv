@@ -47,6 +47,25 @@ export class InventarioController {
         });
     }
 
+    @Get('/producto/:codigo')
+    getByProductCode(
+        @Res() response,
+        @Param('codigo') codigo,
+    ) {
+        this.inventarioService.getByProductForSale(codigo).then(( inventario: Inventario ) => {
+            if ( inventario ) {
+                response.status(HttpStatus.OK)
+                .json(new CResponse(Status.OK, 'Exito', this.authService.token, inventario));
+            } else {
+                response.status(HttpStatus.OK)
+                .json(new CResponse(Status.NO_RECORDS_FOUND, `El producto con codigo: ${  codigo } no existe`, this.authService.token));
+            }
+        }).catch((error) => {
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .json(new CResponse(Status.ERROR, 'Error al obtener el inventario del producto', this.authService.token, {}, error));
+        });
+    }
+
     @Put('/supply/:id')
     supply(
         @Body() inventariodto: InventarioDto,

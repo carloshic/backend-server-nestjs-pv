@@ -29,6 +29,9 @@ export class CategoriaService {
             {
                 where: `Categoria.empresa = ${this.authService.empresaActiva.id} ${strEstatus}`,
                 relations: this.relaciones,
+                order: {
+                    id: 'ASC',
+                },
             });
     }
     async getById(id: number): Promise<Categoria> {

@@ -84,7 +84,10 @@ import { Inventario } from './entities/inventario.entity';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer ) {
-    consumer.apply(AuthMiddleware).exclude( { path: 'usuario', method: RequestMethod.POST } ).forRoutes(UsuarioController);
+    consumer.apply(AuthMiddleware).exclude(
+      { path: 'usuario', method: RequestMethod.POST },
+      { path: '/usuario/existe_email/:email', method: RequestMethod.GET },
+    ).forRoutes(UsuarioController);
     consumer.apply(AuthMiddleware)
     .exclude( { path: 'empresa', method: RequestMethod.POST }, { path: 'empresa', method: RequestMethod.GET } ).forRoutes(EmpresaController);
     consumer.apply(AuthMiddleware).forRoutes(MarcaController);
@@ -95,5 +98,7 @@ export class AppModule {
     consumer.apply(AuthMiddleware).forRoutes(PersonaController);
     consumer.apply(AuthMiddleware).forRoutes(TipoOperacionController);
     consumer.apply(AuthMiddleware).forRoutes(InventarioController);
+    consumer.apply(AuthMiddleware).forRoutes(OperacionController);
+    consumer.apply(AuthMiddleware).forRoutes(ValidadorController);
   }
 }

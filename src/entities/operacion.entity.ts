@@ -36,10 +36,10 @@ total: number;
 })
 tipooperacion: TipoOperacion;
 
-@OneToMany(type => DetalleOperacion, detalleoperacion => detalleoperacion.operacion, {
-    eager: true,
-})
-detalleOperacion: DetalleOperacion[];
+// @OneToMany(type => DetalleOperacion, detalleoperacion => detalleoperacion.operacion, {
+//     eager: true,
+// })
+// detalleOperacion: DetalleOperacion[];
 
 @ManyToOne(type => Caja, caja => caja.id)
 caja: Caja;
@@ -49,4 +49,5 @@ fechamodificacion: Date;
 
 @ManyToOne(type => Usuario, usuario => usuario.id)
 usuariomodificacion: Usuario;
+    operacion: Promise<Persona>;
 }

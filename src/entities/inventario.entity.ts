@@ -19,11 +19,13 @@ export class Inventario {
 @PrimaryGeneratedColumn()
 id: number;
 
-@OneToOne(type => Producto, producto => producto.id)
+@OneToOne(type => Producto, producto => producto.id, {
+    eager: true,
+})
 @JoinColumn()
 producto: Producto;
 
-@ManyToOne(type => Empresa, empresa => empresa.id)
+@ManyToOne(type => Empresa)
 empresa: Empresa;
 
 @Column()

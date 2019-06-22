@@ -22,7 +22,6 @@ export class ValidadorController {
         switch ( entidad ) {
             case 'usuario':
                 if ( tipo === 'existe_email' ) {
-
                     this.usuarioService.getByEmail(valor).then(( usuario: Usuario ) => {
 
                         if ( usuario ) {

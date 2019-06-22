@@ -23,6 +23,23 @@ export class UsuarioController {
         });
     }
 
+    @Get('/existe_email/:email')
+    validarExisteUsuario(
+        @Res() response,
+        @Param('email') email,
+    ) {
+        this.usuarioService.getByEmail(email).then(( usuario: Usuario ) => {
+            if ( usuario ) {
+                response.status(HttpStatus.OK).json({ email_existente: true });
+            } else {
+                response.status(HttpStatus.OK).json(null);
+            }
+        }).catch((error) => {
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener usuario', this.authService.token, error));
+        });
+    }
+
     @Get(':id')
     get(
         @Res() response,

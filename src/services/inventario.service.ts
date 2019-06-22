@@ -2,9 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inventario } from '../entities/inventario.entity';
-import { Repository, Equal, DeleteResult } from 'typeorm';
-import { InventarioDto } from 'src/dto/inventario.dto';
-import { ProductoService } from './producto.service';
+import { Repository, Equal, DeleteResult, getRepository } from 'typeorm';
+import { InventarioDto } from '../dto/inventario.dto';
+import { Operacion } from '../entities/operacion.entity';
+import { DetalleOperacion } from '../entities/detalle-operacion.entity';
+import { TipoOperacionService } from './tipo-operacion.service';
+import { TipoOperacion } from '../entities/tipo-operacion.entity';
 
 @Injectable()
 export class InventarioService {
@@ -15,9 +18,11 @@ export class InventarioService {
     ];
     constructor(
         private authService: AuthService,
-        private productoService: ProductoService,
+        private tipoOperacionService: TipoOperacionService,
         @InjectRepository(Inventario)
         private readonly inventarioRepo: Repository<Inventario>,
+        @InjectRepository(Operacion)
+        private readonly operacionRepo: Repository<Operacion>,
     ) { }
 
     async getAll(): Promise<Inventario[]> {
@@ -40,24 +45,27 @@ export class InventarioService {
         });
     }
 
+    async getByProductForSale(codigo: string) { // Promise<Inventario> {
+        return await getRepository(Inventario)
+        .createQueryBuilder('inventario')
+        .innerJoinAndSelect('inventario.producto', 'producto')
+        .where('producto.codigo = :codigo', { codigo })
+        .andWhere('inventario."empresaId" = :empresa', { empresa: this.authService.empresaActiva.id }).getOne();
+    }
+
     async supply( idInventario: number, inventarioDto: InventarioDto ) {
+
+        const operacion = new Operacion();
+        const detalleOperacion = new DetalleOperacion();
+
         const inventarioActualizar: Inventario =  await this.inventarioRepo.findOne(idInventario);
+        const tipoOperacionAbastecimiento: TipoOperacion = await this.tipoOperacionService.getByCode('ABASTECIMIENTO');
         inventarioActualizar.stock += inventarioDto.incremento;
         inventarioActualizar.usuariomodificacion = this.authService.usuarioActivo;
+
         return await this.inventarioRepo.save(inventarioActualizar);
     }
     async delete(id: number): Promise<DeleteResult> {
         return await this.inventarioRepo.delete(id);
     }
-
-    // async search(term: string, incluirInactivos: string) {
-    //     return await this.inventarioRepo
-    //     .find( {
-    //         where: `Inventario.empresa = ${this.authService.empresaActiva.id}
-    //          AND (LOWER(Inventario.codigo) LIKE '%${term.toLowerCase()}%'
-    //          OR LOWER(Inventario.valor) LIKE '%${term.toLowerCase()}%')`,
-    //         relations: this.relaciones,
-    //     });
-    // }
-
 }

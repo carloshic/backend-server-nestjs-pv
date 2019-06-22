@@ -24,6 +24,9 @@ export class UnidadService {
         return await this.unidadRepo.find( {
             where: `${strEstatus}`,
             relations: [ 'usuariomodificacion' ],
+            order: {
+                id: 'ASC',
+            },
         } );
     }
     async getById(id: number): Promise<Unidad> {

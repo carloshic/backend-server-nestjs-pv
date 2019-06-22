@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, DeleteResult, getConnection } from 'typeorm';
+import { Repository, DeleteResult, getConnection, Equal } from 'typeorm';
 import { Producto } from '../entities/producto.entity';
 import { ProductoDto } from '../dto/producto.dto';
 import { AuthService } from './auth.service';
@@ -10,7 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ROOT_APP } from '../global';
-import { Inventario } from '../entities/Inventario.entity';
+import { Inventario } from '../entities/inventario.entity';
+import { InventarioService } from './inventario.service';
 
 @Injectable()
 export class ProductoService {
@@ -25,12 +26,11 @@ export class ProductoService {
     constructor(
         @InjectRepository(Producto)
         private readonly productoRepo: Repository<Producto>,
-        @InjectRepository(Inventario)
-        private readonly inventarioRepo: Repository<Inventario>,
         private authService: AuthService,
         private marcaService: MarcaService,
         private categoriaService: CategoriaService,
         private unidadService: UnidadService,
+        private inventarioService: InventarioService,
     ) {}
     async getAll(incluirInactivos = 'false'): Promise<Producto[]> {
         let strEstatus: string;
@@ -51,18 +51,14 @@ export class ProductoService {
             });
     }
     async getById(id: number): Promise<Producto> {
-        return await this.productoRepo.findOne(id,
-            {
-                where: `Producto.empresa = ${this.authService.empresaActiva.id}`,
-                relations: this.relaciones,
-            });
+        return await this.productoRepo.findOne(id, { where : { empresa: Equal(this.authService.empresaActiva.id) }});
     }
 
     async getByCode(codigo: string) {
-        return await this.productoRepo.findOne( { codigo }, {
-            where: `Producto.empresa = ${this.authService.empresaActiva.id}`,
-            relations: this.relaciones,
-        } );
+        return await this.productoRepo.findOne({where: {
+            empresa: Equal(this.authService.empresaActiva.id),
+            codigo,
+        }});
     }
 
     async create(producto: ProductoDto): Promise<Producto> {
@@ -94,7 +90,8 @@ export class ProductoService {
                 inventario.stock = 0;
                 inventario.usuariomodificacion = this.authService.usuarioActivo;
 
-                await queryRunner.manager.save(Inventario);
+                await queryRunner.manager.getRepository(Inventario).save(inventario);
+
                 await queryRunner.commitTransaction();
                 await queryRunner.release();
                 resolve(productoBD);
@@ -107,23 +104,31 @@ export class ProductoService {
     }
     async update( id: number, producto: ProductoDto ): Promise<Producto> {
 
-        const nuevoActualizar = await this.productoRepo.findOne(id);
-        nuevoActualizar.codigo = producto.codigo;
-        nuevoActualizar.nombre = producto.nombre;
-        nuevoActualizar.descripcion = producto.descripcion;
-        nuevoActualizar.costo = producto.costo;
-        nuevoActualizar.precio = producto.precio;
-        nuevoActualizar.unidad = await this.unidadService.getById(producto.unidadId);
-        nuevoActualizar.stockminimo = producto.stockminimo;
-        nuevoActualizar.marca = await this.marcaService.getById(producto.marcaId);
-        nuevoActualizar.categoria = await this.categoriaService.getById(producto.categoriaId);
-        if ( nuevoActualizar.estatus !== producto.estatus ) {
-            nuevoActualizar.estatus = producto.estatus;
-            nuevoActualizar.usuarioestatus = this.authService.usuarioActivo;
-        }
-        nuevoActualizar.usuariomodificacion = this.authService.usuarioActivo;
+        const productoActualizar = await this.productoRepo.findOne(id);
+        productoActualizar.codigo = producto.codigo;
+        productoActualizar.nombre = producto.nombre;
+        productoActualizar.descripcion = producto.descripcion;
+        productoActualizar.costo = producto.costo;
+        productoActualizar.precio = producto.precio;
+        productoActualizar.unidad = await this.unidadService.getById(producto.unidadId);
+        productoActualizar.stockminimo = producto.stockminimo;
+        productoActualizar.marca = await this.marcaService.getById(producto.marcaId);
+        productoActualizar.categoria = await this.categoriaService.getById(producto.categoriaId);
+        if ( productoActualizar.estatus !== producto.estatus ) {
+            productoActualizar.estatus = producto.estatus;
+            productoActualizar.usuarioestatus = this.authService.usuarioActivo;
 
-        return await this.productoRepo.save(nuevoActualizar);
+            if ( !producto.estatus ) {
+                const inventario: Inventario = await this.inventarioService.getByProductForSale(productoActualizar.codigo);
+                if ( inventario.stock > 0) {
+                    throw new Error(`El producto no puede ser dado de baja hasta que se agote su stock,
+                     actualmente hay en existencia ${ inventario.stock }`);
+                }
+            }
+        }
+        productoActualizar.usuariomodificacion = this.authService.usuarioActivo;
+
+        return await this.productoRepo.save(productoActualizar);
     }
     async delete(id: number): Promise<DeleteResult> {
         return await this.productoRepo.delete(id);

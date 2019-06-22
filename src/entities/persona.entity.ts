@@ -50,4 +50,7 @@ fechamodificacion: Date;
     eager: true,
 })
 usuariomodificacion: Usuario;
+
+@Column({nullable: false, default: false})
+esPersonaVentaPublico: boolean;
 }

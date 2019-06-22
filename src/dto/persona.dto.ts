@@ -6,4 +6,5 @@ export class PersonaDto {
     public readonly correo: string;
     public readonly tipo: string;
     public readonly estatus: boolean;
+    public readonly espersonaventapublico: boolean;
 }

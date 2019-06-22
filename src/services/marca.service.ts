@@ -31,6 +31,9 @@ export class MarcaService {
         {
             where: `Marca.empresa = ${this.authService.empresaActiva.id} ${strEstatus}`,
             relations: this.relaciones,
+            order: {
+                id: 'ASC',
+            },
         });
     }
     async getById(id: number): Promise<Marca> {

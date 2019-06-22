@@ -24,7 +24,7 @@ empresa: Empresa;
 @ManyToOne(type => Operacion, operacion => operacion.id)
 operacion: Operacion;
 
-@OneToOne(type => Producto, producto => producto.id, {
+@ManyToOne(type => Producto, producto => producto.id, {
     eager: true,
 })
 producto: Producto;

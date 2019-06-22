@@ -19,7 +19,9 @@ export class Producto {
 @PrimaryGeneratedColumn()
 id: number;
 
-@ManyToOne(type => Empresa, empresa => empresa.id)
+@ManyToOne(type => Empresa, empresa => empresa.id, {
+    eager: true,
+})
 empresa: Empresa;
 
 @Column()

@@ -46,10 +46,23 @@ estatus,
 fechamodificacion)
 SELECT 'admin@gmail.com','CARLOS','$2a$10$JDXQWdAr/qjNJZTtLxUx.O6UXajE2Onha5pqbGQZxTsIlH7nayXGa','',	false,'ADMIN_ROLE',	true
 
+INSERT INTO public.empresa(
+	id, nombre, rfc, direccion, logo, estatus, "usuarioestatusId", "usuariomodificacionId")
+	VALUES ('Refaccionaria Cuates', '', '', '', 'A', 1, 1);
+	
+INSERT INTO public.empresa(
+	id, nombre, rfc, direccion, logo, estatus, "usuarioestatusId", "usuariomodificacionId")
+	VALUES ('Papeleria Sofia', '', '', '', 'A', 1, 1);
+
 
 INSERT INTO CONFIGURACION (codigo, valor, "empresaId", "usuariomodificacionId")
 SELECT 'PORCENTAJE_UTILIDAD_SUGERIDA', '20', 1, 1
 
+INSERT INTO CONFIGURACION (codigo, valor, "empresaId", "usuariomodificacionId")
+SELECT 'SESSION_TIME_OUT', '3600', 1, 1
 
 INSERT INTO CONFIGURACION (codigo, valor, "empresaId", "usuariomodificacionId")
-SELECT 'DURACION_SESION', '3600', 1, 1
+SELECT 'PORCENTAJE_UTILIDAD_SUGERIDA', '20', 2, 1
+
+INSERT INTO CONFIGURACION (codigo, valor, "empresaId", "usuariomodificacionId")
+SELECT 'SESSION_TIME_OUT', '3600', 2, 1
