@@ -16,13 +16,14 @@ export class ProductoController {
     getAll(@Res() response, @Query('inactivos') incluirInactivos ) {
         this.productService.getAll(incluirInactivos).then(( productos: Producto[] ) => {
             if ( productos.length > 0 ) {
-                response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, productos));
+                response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, productos));    
             } else {
                 response.status(HttpStatus.OK).json(new CResponse(Status.NO_RECORDS_FOUND, 'No hay productos registradas', this.authService.token));
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener el listado de productos', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener el listado de productos', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -41,7 +42,8 @@ export class ProductoController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener la producto', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al obtener la producto', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -60,7 +62,8 @@ export class ProductoController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener la producto', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al obtener la producto', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -74,7 +77,8 @@ export class ProductoController {
             .json(new CResponse(Status.OK, 'Se creó el producto correctamente', this.authService.token, producto));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al crear el nuevo producto', null, this.authService.token, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al crear el nuevo producto', null, this.authService.token,
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -89,7 +93,8 @@ export class ProductoController {
             .json(new CResponse(Status.OK, 'Se actualizó el producto con exito', this.authService.token, marca));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al actualizar el producto', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al actualizar el producto', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -102,7 +107,8 @@ export class ProductoController {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Producto borrado con exito', this.authService.token));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al borrar el producto', this.authService.token , { }, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al borrar el producto', this.authService.token , { },
+            { message: error.message, stack: error.stack }));
         });
     }
 }

@@ -22,7 +22,8 @@ export class PersonaController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener el listado de personas', this.authService.token, {}, { message: error.message }));
+            .json(new CResponse(Status.ERROR, 'Error al obtener el listado de personas', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -42,7 +43,8 @@ export class PersonaController {
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .json(new CResponse(Status.ERROR,
-                'Ocurrió un error al obtener los datos de la persona', this.authService.token, {}, { message: error.message }));
+                'Ocurrió un error al obtener los datos de la persona', this.authService.token, {},
+                { message: error.message, stack: error.stack }));
         });
     }
 
@@ -62,7 +64,8 @@ export class PersonaController {
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .json(new CResponse(Status.ERROR,
-                'Ocurrió un error al obtener los datos de la persona', this.authService.token, {}, { message: error.message }));
+                'Ocurrió un error al obtener los datos de la persona', this.authService.token, {},
+                { message: error.message, stack: error.stack }));
         });
     }
 
@@ -76,7 +79,8 @@ export class PersonaController {
             .json(new CResponse(Status.OK, 'Persona creada correctamente', this.authService.token, persona));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al crear la Persona', this.authService.token, {}, { message: error.message }));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al crear la Persona', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -91,7 +95,8 @@ export class PersonaController {
             .json(new CResponse(Status.OK, 'Persona actualizada con exito', this.authService.token, persona));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al actualizar la Persona', this.authService.token, {}, { message: error.message }));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al actualizar la Persona', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -104,7 +109,8 @@ export class PersonaController {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Persona borrada con exito', this.authService.token));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al borrar la Persona', this.authService.token , {}, { message: error.message }));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al borrar la Persona', this.authService.token , {},
+            { message: error.message, stack: error.stack }));
         });
     }
 }

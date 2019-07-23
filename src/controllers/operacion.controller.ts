@@ -22,7 +22,8 @@ export class OperacionController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener el listado de operaciones', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener el listado de operaciones', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
     @Post()
@@ -31,7 +32,8 @@ export class OperacionController {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, operacion));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al guardar la operación', this.authService.token, {}, { message: error.message }));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al guardar la operación', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 }

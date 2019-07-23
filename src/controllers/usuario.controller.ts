@@ -36,7 +36,8 @@ export class UsuarioController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener usuario', this.authService.token, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener usuario', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -49,7 +50,8 @@ export class UsuarioController {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, usuario));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener usuario', this.authService.token, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener usuario', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -62,7 +64,7 @@ export class UsuarioController {
             response.status(HttpStatus.CREATED).json(new CResponse(Status.OK, 'Usuario Creado', null, usuario));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al crear usuario', null, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al crear usuario', null, null, { message: error.message, stack: error.stack }));
         });
     }
 
@@ -77,7 +79,8 @@ export class UsuarioController {
             .json(new CResponse(Status.OK, 'Usuario actualizado correctamente ', this.authService.token, usuarioActualizado));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error actualizar el usuario', this.authService.token, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error actualizar el usuario', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -90,7 +93,8 @@ export class UsuarioController {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Usuario borrado', this.authService.token));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al borrar el usuario', this.authService.token , { }, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al borrar el usuario', this.authService.token , { },
+            { message: error.message, stack: error.stack }));
         });
     }
 }

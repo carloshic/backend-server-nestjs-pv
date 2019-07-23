@@ -40,7 +40,8 @@ export class MarcaController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener la marca', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al obtener la marca', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -54,7 +55,8 @@ export class MarcaController {
             .json(new CResponse(Status.OK, 'Marca creada correctamente', this.authService.token, marca));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al crear la nueva marca', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al crear la nueva marca', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -69,7 +71,8 @@ export class MarcaController {
             .json(new CResponse(Status.OK, 'Marca actualizada con exito', this.authService.token, marca));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al acutalizar la marca', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al acutalizar la marca', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -82,7 +85,8 @@ export class MarcaController {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Marca borrada con exito'), this.authService.token);
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al borrar la marca', this.authService.token , this.authService.token, error));
+            .json(new CResponse(Status.ERROR, 'Error al borrar la marca', this.authService.token , this.authService.token,
+            { message: error.message, stack: error.stack }));
         });
     }
 }

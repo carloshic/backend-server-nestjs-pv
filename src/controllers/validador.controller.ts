@@ -31,7 +31,8 @@ export class ValidadorController {
                         }
                     }).catch((error) => {
                         response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .json(new CResponse(Status.ERROR, 'Ocurrió un error al realizar la validacion', null, error));
+                        .json(new CResponse(Status.ERROR, 'Ocurrió un error al realizar la validacion', null, null,
+                        { message: error.message, stack: error.stack }));
                     });
                 } else {
                     response.status(HttpStatus.BAD_REQUEST)
@@ -50,7 +51,8 @@ export class ValidadorController {
                             }
                         }).catch((error) => {
                             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .json(new CResponse(Status.ERROR, 'Ocurrió un error al realizar la validacion', null, error));
+                            .json(new CResponse(Status.ERROR, 'Ocurrió un error al realizar la validacion', null, null,
+                            { message: error.message, stack: error.stack }));
                         });
                     } else {
                         response.status(HttpStatus.BAD_REQUEST)
@@ -59,7 +61,7 @@ export class ValidadorController {
                     break;
             default:
                     response.status(HttpStatus.BAD_REQUEST)
-                    .json(new CResponse(Status.ERROR, 'entidad no valido', null, null));
+                    .json(new CResponse(Status.ERROR, 'entidad no valido', null, null, null));
 
         }
     }

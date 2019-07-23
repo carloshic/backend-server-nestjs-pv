@@ -23,7 +23,8 @@ export class TipoOperacionController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener el listado de tipos de operación', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al obtener el listado de tipos de operación', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -42,7 +43,8 @@ export class TipoOperacionController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener el tipo de operación', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener el tipo de operación', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
     @Get('/codigo/:codigo')
@@ -62,7 +64,8 @@ export class TipoOperacionController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener el tipo de operación', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al obtener el tipo de operación', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -74,9 +77,10 @@ export class TipoOperacionController {
         this.tipoOperacionService.create(body).then((tipoOperacion: TipoOperacion) => {
             response.status(HttpStatus.OK)
             .json(new CResponse(Status.OK, 'Tipo de operación creada correctamente', this.authService.token, tipoOperacion));
-        }).catch((error) => {
+        }).catch((error: Error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al crear el tipo de operación', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al crear el tipo de operación', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -88,10 +92,11 @@ export class TipoOperacionController {
     ) {
         this.tipoOperacionService.update(id, tipoOperaciondto).then((tipoOperacion: TipoOperacion) => {
             response.status(HttpStatus.OK)
-            .json(new CResponse(Status.OK, 'TipoOperacion actualizada con exito', this.authService.token, tipoOperacion));
+            .json(new CResponse(Status.OK, 'Tipo de operación actualizada con exito', this.authService.token, tipoOperacion));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al actualizar el tipo de operación', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al actualizar el tipo de operación', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -104,7 +109,8 @@ export class TipoOperacionController {
             response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Tipo de operación borrada con exito', this.authService.token));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al borrar la el tipo de operación', this.authService.token , {}, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al borrar la el tipo de operación', this.authService.token , {},
+            { message: error.message, stack: error.stack }));
         });
     }
 }

@@ -9,6 +9,7 @@ import { UsuarioService } from '../services/usuario.service';
 import * as bcrypt from 'bcryptjs';
 import { Configuracion } from '../entities/configuracion.entity';
 import { ConfiguracionService } from '../services/configuracion.service';
+import { ServerResponse } from 'http';
 
 @Controller('auth')
 export class AuthController {
@@ -65,7 +66,8 @@ export class AuthController {
             }
 
         }).catch((error) => {
-            response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(new CResponse( Status.ERROR, 'Error al obtener usuario', null, error));
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(new CResponse( Status.ERROR, 'Error al obtener usuario', null, 
+            { message: error.message, stack: error.stack } ));
         });
     }
     @Post('renuevatoken')

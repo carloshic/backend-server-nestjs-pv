@@ -24,7 +24,8 @@ export class InventarioController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener el listado del Inventario', this.authService.token, [], error));
+            .json(new CResponse(Status.ERROR, 'Error al obtener el listado del Inventario', this.authService.token, [],
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -43,7 +44,8 @@ export class InventarioController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener el inventario del producto', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al obtener el inventario del producto', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -62,7 +64,8 @@ export class InventarioController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener el inventario del producto', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al obtener el inventario del producto', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -77,7 +80,8 @@ export class InventarioController {
             .json(new CResponse(Status.OK, 'Inventario actualizada con exito', this.authService.token, Inventario));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Ocurrió un error al acutalizar ek inventario', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Ocurrió un error al acutalizar ek inventario', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 }

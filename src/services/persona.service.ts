@@ -50,9 +50,12 @@ export class PersonaService {
     }
     async create(persona: PersonaDto): Promise<Persona> {
 
-        if ( persona.espersonaventapublico ) {
+        if ( persona.esPersonaVentaPublico ) {
             const [ personaVEntaPublico, conteo ] = await this.personaRepo.findAndCount({
-                where: { esPersonaVentaPublico: true },
+                where: {
+                    empresa: Equal(this.authService.empresaActiva.id),
+                    esPersonaVentaPublico: true ,
+                },
             });
 
             if ( conteo >= 1 ) {
@@ -71,15 +74,16 @@ export class PersonaService {
         nuevaPersona.estatus = persona.estatus;
         nuevaPersona.usuarioestatus = this.authService.usuarioActivo;
         nuevaPersona.usuariomodificacion = this.authService.usuarioActivo;
-        nuevaPersona.esPersonaVentaPublico = persona.espersonaventapublico;
+        nuevaPersona.esPersonaVentaPublico = persona.esPersonaVentaPublico;
 
         return await this.personaRepo.save(nuevaPersona);
 
     }
     async update( id: number, persona: PersonaDto ): Promise<Persona> {
-        if ( persona.espersonaventapublico ) {
+        if ( persona.esPersonaVentaPublico ) {
             const [ personaVEntaPublico, conteo ] = await this.personaRepo.findAndCount({
                 where: {
+                    empresa: Equal(this.authService.empresaActiva.id),
                     esPersonaVentaPublico: true,
                     id: Not(id),
                  },
@@ -105,7 +109,7 @@ export class PersonaService {
         }
         personaActualizar.usuarioestatus = this.authService.usuarioActivo;
         personaActualizar.usuariomodificacion = this.authService.usuarioActivo;
-        personaActualizar.esPersonaVentaPublico = persona.espersonaventapublico;
+        personaActualizar.esPersonaVentaPublico = persona.esPersonaVentaPublico;
         return await this.personaRepo.save(personaActualizar);
     }
     async delete(id: number): Promise<DeleteResult> {

@@ -45,7 +45,8 @@ export class BusquedaController {
                     response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, usuarios));
                 }).catch((error) => {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al buscar usuarios', this.authService.token, {}, error));
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al buscar usuarios', this.authService.token, {},
+                    { message: error.message, stack: error.stack }));
                 });
                 break;
             case 'producto':
@@ -53,7 +54,8 @@ export class BusquedaController {
                     response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, productos));
                 }).catch((error) => {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al buscar productos', this.authService.token, {}, error));
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al buscar productos', this.authService.token, {},
+                    { message: error.message, stack: error.stack }));
                 });
                 break;
             case 'unidad':
@@ -61,7 +63,8 @@ export class BusquedaController {
                     response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, unidades));
                 }).catch((error) => {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al buscar unidades', this.authService.token, {}, error));
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al buscar unidades', this.authService.token, {},
+                    { message: error.message, stack: error.stack }));
                 });
                 break;
             case 'marca':
@@ -69,7 +72,8 @@ export class BusquedaController {
                     response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, marcas));
                 }).catch((error) => {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar marcas', this.authService.token, {}, error));
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar marcas', this.authService.token, {},
+                    { message: error.message, stack: error.stack }));
                 });
                 break;
             case 'categoria':
@@ -77,7 +81,8 @@ export class BusquedaController {
                     response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, categorias));
                 }).catch((error) => {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar categorias', this.authService.token, {}, error));
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar categorias', this.authService.token, {},
+                    { message: error.message, stack: error.stack }));
                 });
                 break;
             case 'configuracion':
@@ -85,7 +90,8 @@ export class BusquedaController {
                     response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, configuraciones));
                 }).catch((error) => {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar configuraciones', this.authService.token, {}, error));
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar configuraciones', this.authService.token, {},
+                    { message: error.message, stack: error.stack }));
                 });
                 break;
             case 'persona':
@@ -93,7 +99,8 @@ export class BusquedaController {
                     response.status(HttpStatus.OK).json(new CResponse(Status.OK, 'Exito', this.authService.token, personas));
                 }).catch((error) => {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar personas', this.authService.token, {}, error));
+                    .json(new CResponse(Status.ERROR, 'Ocurrió un error al intentar buscar personas', this.authService.token, {},
+                    { message: error.message, stack: error.stack }));
                 });
                 break;
             default:

@@ -25,7 +25,8 @@ export class ConfiguracionController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener el listado de configuraciones', this.authService.token, [], error));
+            .json(new CResponse(Status.ERROR, 'Error al obtener el listado de configuraciones', this.authService.token, [],
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -44,7 +45,8 @@ export class ConfiguracionController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener la configuracion', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al obtener la configuracion', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
     @Get('/codigo/:codigo')
@@ -62,7 +64,8 @@ export class ConfiguracionController {
             }
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al obtener la configuracion', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al obtener la configuracion', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -76,7 +79,8 @@ export class ConfiguracionController {
             .json(new CResponse(Status.OK, 'configuracion creada correctamente', this.authService.token, configuracion));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al crear la nueva configuracion', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al crear la nueva configuracion', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 
@@ -91,7 +95,8 @@ export class ConfiguracionController {
             .json(new CResponse(Status.OK, 'Configuracion actualizada con exito', this.authService.token, configuracion));
         }).catch((error) => {
             response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .json(new CResponse(Status.ERROR, 'Error al acutalizar la configuracion', this.authService.token, {}, error));
+            .json(new CResponse(Status.ERROR, 'Error al acutalizar la configuracion', this.authService.token, {},
+            { message: error.message, stack: error.stack }));
         });
     }
 

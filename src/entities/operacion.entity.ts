@@ -49,5 +49,5 @@ fechamodificacion: Date;
 
 @ManyToOne(type => Usuario, usuario => usuario.id)
 usuariomodificacion: Usuario;
-    operacion: Promise<Persona>;
+
 }
